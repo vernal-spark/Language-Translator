@@ -1,0 +1,47 @@
+.room-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: #2a84ee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.media-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.title {
+  font-family: "Roboto";
+  color: white;
+  font-size: 30px;
+}
+.text {
+  font-family: "Roboto";
+  color: white;
+  /* font-size: 30px; */
+}
+.media-element {
+  width: 30vw;
+  height: 30vh;
+  border-radius: 10px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.name-char {
+  font-family: "Roboto";
+  font-size: 30px;
+  color: #2a84ee;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  /* border: 1px solid black; */
+}
+.speaking {
+  border: 5px solid #2a84ee;
+}

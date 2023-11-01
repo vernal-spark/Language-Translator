@@ -1,0 +1,49 @@
+.sub-container-2 {
+  width: 50vw;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.btn {
+  width: 250px;
+  height: 30px;
+  background-color: #fff;
+  border-radius: 10px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+}
+.start-btn {
+  color: #2a84ee;
+  border: 1.5px solid #2a84ee;
+}
+.join-btn {
+  color: #fff;
+  background-color: #2a84ee;
+  border: 0;
+}
+.btn:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+.input {
+  width: 250px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid #000;
+  color: #000;
+}
+.hr {
+  background-color: #000;
+  height: 0.1px;
+  width: 250px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.heading {
+  font-family: "Roboto";
+  /* color: #2a84ee; */
+}
