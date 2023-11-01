@@ -9,7 +9,7 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }) => {
-  const socket = useMemo(() => io("localhost:8080"), []);
+  const socket = useMemo(() => io("https://language-translator-iyfh.onrender.com:8080"), []);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
