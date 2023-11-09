@@ -2,16 +2,16 @@ import React, { useState, useEffect, useCallback } from "react";
 import ReactPlayer from "react-player";
 import { useSocket } from "../../context/SocketProvide";
 import peer from "../../utils/peer";
-import ReactAudioPlayer from "react-audio-player";
+// import ReactAudioPlayer from "react-audio-player";
 import "./RoomPage.css";
 
 const RoomPage = () => {
-  const [me, setMe] = useState(null);
-  const [myName, setMyname] = useState("");
+  // const [me, setMe] = useState(null);
+  // const [myName, setMyname] = useState("");
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [remoteId, setRemoteId] = useState(null);
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  // const [isSpeaking, setIsSpeaking] = useState(false);
   const socket = useSocket();
 
   // const handleMedia = useCallback(async () => {
@@ -24,13 +24,12 @@ const RoomPage = () => {
 
   const handleCallUser = useCallback(
     async (data) => {
-      // console.log(data);
-      setMe(data.me);
       setRemoteId(data.id);
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
+      console.log("1", stream);
       setLocalStream(stream);
       const offer = await peer.getOffer();
       socket.emit("callUser", { callFrom: data.me, callTo: data.id, offer });
@@ -40,11 +39,11 @@ const RoomPage = () => {
 
   const handleIncommingCall = useCallback(
     async (data) => {
-      // console.log(data);
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
+      console.log("1", stream);
       setLocalStream(stream);
       setRemoteId(data.callFrom);
       const answer = await peer.getAnswer(data.offer);
@@ -57,11 +56,29 @@ const RoomPage = () => {
     [socket]
   );
 
+  useEffect(() => {
+    console.log(localStream);
+  }, [localStream]);
+
   const handleCallAccepted = useCallback(
-    (data) => {
-      // console.log(data);
-      peer.setLocalDescription(data.answer);
+    async (data) => {
+      await peer.setLocalDescription(data.answer);
+      console.log("2", localStream);
       for (const track of localStream.getTracks()) {
+        peer.peer.addTrack(track, localStream);
+      }
+      socket.emit("send-stream", { to: data.callFrom });
+    },
+    [localStream, socket]
+  );
+
+  const handleSendStream = useCallback(
+    async (data) => {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      for (const track of stream.getTracks()) {
         peer.peer.addTrack(track, localStream);
       }
     },
@@ -70,7 +87,7 @@ const RoomPage = () => {
 
   const handleNegoNeeded = useCallback(async () => {
     const offer = await peer.getOffer();
-    socket.emit("peer:nego:needed", { offer, to: remoteId });
+    socket.emit("peer:nego:needed", { offer, callTo: remoteId });
   }, [remoteId, socket]);
 
   const handleNegoNeedIncomming = useCallback(
@@ -92,12 +109,14 @@ const RoomPage = () => {
     socket.on("callAccepted", handleCallAccepted);
     socket.on("peer:nego:needed", handleNegoNeedIncomming);
     socket.on("peer:nego:final", handleNegoNeedFinal);
+    socket.on("send-stream", handleSendStream);
     return () => {
       socket.off("remote-user-joined", handleCallUser);
       socket.off("incoming-call", handleIncommingCall);
       socket.off("callAccepted", handleCallAccepted);
       socket.off("peer:nego:needed", handleNegoNeedIncomming);
       socket.off("peer:nego:final", handleNegoNeedFinal);
+      socket.off("send-stream", handleSendStream);
     };
   }, [
     handleCallAccepted,
@@ -106,19 +125,22 @@ const RoomPage = () => {
     handleNegoNeedFinal,
     handleNegoNeedIncomming,
     socket,
+    localStream,
+    handleSendStream,
   ]);
 
   useEffect(() => {
     peer.peer.addEventListener("track", async (ev) => {
-      const remote = ev.streams;
+      // console.log(ev);
+      const remoteStream = ev.streams;
       // console.log("GOT TRACKS!!");
-      setRemoteStream(remote[0]);
+      setRemoteStream(remoteStream[0]);
     });
     return () => {
       peer.peer.removeEventListener("track", async (ev) => {
-        const remote = ev.streams;
+        const remoteStream = ev.streams;
         // console.log("GOT TRACKS!!");
-        setRemoteStream(remote[0]);
+        setRemoteStream(remoteStream[0]);
       });
     };
   }, []);
@@ -130,8 +152,8 @@ const RoomPage = () => {
     };
   }, [handleNegoNeeded]);
 
-  const nameChar = myName ? myName[0].toUpperCase() : "";
-  const borderClass = isSpeaking ? "speaking" : "";
+  // const nameChar = myName ? myName[0].toUpperCase() : "";
+  // const borderClass = isSpeaking ? "speaking" : "";
 
   return (
     <>

@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSocket } from "../../../context/SocketProvide";
-import { useSnackbar } from "notistack";
+// import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import "./RightScreen.css";
 

@@ -7,7 +7,7 @@ const io = new Server(8080, {
 const roomToIdMap = new Map();
 
 io.on("connection", (socket) => {
-  // console.log(`Socket Connected`, socket.id);
+  console.log(`Socket Connected`, socket.id);
   socket.on("roomJoin", ({ username, room }) => {
     socket.join(room);
     if (roomToIdMap.get(room)) {
@@ -28,9 +28,12 @@ io.on("connection", (socket) => {
     // console.log(data.answer);
     io.to(data.callTo).emit("callAccepted", data);
   });
-  socket.on("peer:nego:needed", ({ to, offer }) => {
+  socket.on("send-stream", (data) => {
+    io.to(data.to).emit("send-stream", { from: socket.id });
+  });
+  socket.on("peer:nego:needed", ({ callTo, offer }) => {
     // console.log("peer:nego:needed", offer);
-    io.to(to).emit("peer:nego:needed", { from: socket.id, offer });
+    io.to(callTo).emit("peer:nego:needed", { from: socket.id, offer });
   });
 
   socket.on("peer:nego:done", ({ to, ans }) => {
