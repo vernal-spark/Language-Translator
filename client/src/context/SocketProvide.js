@@ -9,7 +9,7 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }) => {
-  const socket = useMemo(() => io("localhost:8080"), []);
+  const socket = useMemo(() => io(" https://1b7a-2401-4900-1f26-67d9-51-9e71-c332-459c.ngrok-free.app"), []);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
